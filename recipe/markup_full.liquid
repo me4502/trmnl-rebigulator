@@ -1,0 +1,11 @@
+{% render 'rebigulator_styles' %}
+<div class="rebigulator">
+  {% render 'rebigulator_header', instance_title: instance_title, date: date %}
+  <div class="rebigulator__body">
+    {% if ok == false %}
+      {% render 'rebigulator_error', error: error %}
+    {% else %}
+      {% render 'rebigulator_challenge', imageUrl: imageUrl, quote: quote, answer: answer, qr_size: 5 %}
+    {% endif %}
+  </div>
+</div>

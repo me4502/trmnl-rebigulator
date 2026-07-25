@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "trmnl-rebigulator": {
+      "type": "http",
+      "url": "https://trmnl.com/mcp?api_key=${TRMNL_REBIGULATOR_MCP_API_KEY}"
+    }
+  }
+}

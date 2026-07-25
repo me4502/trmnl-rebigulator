@@ -1,0 +1,236 @@
+{% template rebigulator_styles %}
+<style>
+  @font-face {
+    font-family: "Akbar";
+    src: url("https://rebigulator.org/fonts/akbar-webfont.woff2") format("woff2");
+    font-style: normal;
+    font-weight: 400;
+  }
+
+  .rebigulator {
+    --rb-sky: #70d1fe;
+    --rb-yellow: #fed90f;
+    --rb-ink: #000;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    color: var(--rb-ink);
+    font-family: sans-serif;
+  }
+
+  .rebigulator__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex: 0 0 auto;
+    border: 3px solid var(--rb-ink);
+    background: var(--rb-sky);
+    padding: 5px 10px;
+  }
+
+  .rebigulator__brand {
+    font-family: "Akbar", sans-serif;
+    font-size: 26px;
+    font-weight: 400;
+    letter-spacing: 0;
+  }
+
+  .rebigulator__identity {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+
+  .rebigulator__logo {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+  }
+
+  .rebigulator__date {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .rebigulator__body {
+    display: flex;
+    flex: 1 1 auto;
+    min-height: 0;
+    gap: 8px;
+    padding-top: 8px;
+  }
+
+  .rebigulator__challenge {
+    display: flex;
+    flex: 1 1 auto;
+    min-width: 0;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .rebigulator__frame {
+    display: block;
+    width: 100%;
+    min-height: 0;
+    flex: 1 1 auto;
+    border: 4px solid var(--rb-ink);
+    background: transparent;
+    object-fit: contain;
+  }
+
+  .rebigulator__quote {
+    flex: 0 0 auto;
+    border: 3px solid var(--rb-ink);
+    background: var(--rb-yellow);
+    padding: 5px 9px;
+    font-size: 17px;
+    font-weight: 900;
+    line-height: 1.1;
+    text-align: center;
+    text-transform: uppercase;
+  }
+
+  .rebigulator__reveal {
+    display: flex;
+    flex: 0 0 142px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 3px solid var(--rb-ink);
+    padding: 7px;
+    text-align: center;
+  }
+
+  .rebigulator__reveal svg {
+    display: block;
+    width: 118px;
+    height: 118px;
+  }
+
+  .rebigulator__reveal-label {
+    margin-top: 4px;
+    font-size: 12px;
+    font-weight: 900;
+    line-height: 1.05;
+    text-transform: uppercase;
+  }
+
+  .rebigulator--compact .rebigulator__header {
+    padding: 3px 7px;
+  }
+
+  .rebigulator--compact .rebigulator__brand {
+    font-size: 18px;
+  }
+
+  .rebigulator--compact .rebigulator__identity {
+    gap: 4px;
+  }
+
+  .rebigulator--compact .rebigulator__logo {
+    width: 22px;
+    height: 22px;
+  }
+
+  .rebigulator--compact .rebigulator__date {
+    font-size: 9px;
+  }
+
+  .rebigulator--compact .rebigulator__body {
+    gap: 5px;
+    padding-top: 5px;
+  }
+
+  .rebigulator--compact .rebigulator__quote {
+    padding: 3px 5px;
+    font-size: 11px;
+  }
+
+  .rebigulator--compact .rebigulator__reveal {
+    flex-basis: 86px;
+    padding: 4px;
+  }
+
+  .rebigulator--compact .rebigulator__reveal svg {
+    width: 70px;
+    height: 70px;
+  }
+
+  .rebigulator--compact .rebigulator__reveal-label {
+    font-size: 8px;
+  }
+
+  .rebigulator--portrait .rebigulator__body {
+    flex-direction: column;
+  }
+
+  .rebigulator--portrait .rebigulator__reveal {
+    flex-basis: auto;
+    flex-direction: row;
+    gap: 8px;
+  }
+
+  .rebigulator--portrait .rebigulator__reveal svg {
+    width: 72px;
+    height: 72px;
+  }
+
+  .rebigulator__error {
+    display: flex;
+    flex: 1 1 auto;
+    align-items: center;
+    justify-content: center;
+    border: 4px solid var(--rb-ink);
+    background: var(--rb-yellow);
+    padding: 18px;
+    font-size: 22px;
+    font-weight: 900;
+    text-align: center;
+    text-transform: uppercase;
+  }
+
+  .screen--1bit .rebigulator__header,
+  .screen--1bit .rebigulator__quote,
+  .screen--2bit .rebigulator__header,
+  .screen--2bit .rebigulator__quote {
+    background: transparent;
+  }
+</style>
+{% endtemplate %}
+
+{% template rebigulator_header %}
+<div class="rebigulator__header">
+  <div class="rebigulator__identity">
+    <img
+      class="image image-dither rebigulator__logo"
+      src="https://rebigulator.org/logo.png"
+      alt=""
+    >
+    <span class="rebigulator__brand">{{ instance_title | default: 'Rebigulator' }}</span>
+  </div>
+  <span class="rebigulator__date">Daily challenge - {{ date }}</span>
+</div>
+{% endtemplate %}
+
+{% template rebigulator_challenge %}
+<div class="rebigulator__challenge">
+  <img
+    class="image image-dither image--contain rebigulator__frame"
+    src="{{ imageUrl }}"
+    alt="Daily Rebigulator frame"
+  >
+  <div class="rebigulator__quote">"{{ quote }}"</div>
+</div>
+<div class="rebigulator__reveal">
+  {{ answer | qr_code: qr_size, 'm' }}
+  <span class="rebigulator__reveal-label">Scan to reveal<br>the episode</span>
+</div>
+{% endtemplate %}
+
+{% template rebigulator_error %}
+<div class="rebigulator__error">
+  {{ error | default: "Unable to load today's Rebigulator challenge." }}
+</div>
+{% endtemplate %}

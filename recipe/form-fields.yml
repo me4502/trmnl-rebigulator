@@ -1,0 +1,14 @@
+- keyname: about
+  field_type: author_bio
+  name: About Rebigulator Daily
+  description: Shows the frame and quote from today's Rebigulator daily challenge, a 'The Simpsons' trivia game. Scan the QR code to reveal the episode answer.
+  category: games
+  learn_more_url: https://trmnl-rebigulator.maddy.tech
+  github_url: https://github.com/Me4502/trmnl-rebigulator
+  email_address: trmnl@madelinemiller.dev
+
+- keyname: instance_title
+  field_type: string
+  name: Display title
+  default: Rebigulator
+  optional: true

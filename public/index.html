@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>TRMNL Rebigulator Daily</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="page stack">
+      <section class="hero card">
+        <span class="eyebrow">TRMNL PLUGIN</span>
+        <h1>Rebigulator Daily</h1>
+        <p class="lead">
+          Put today's Rebigulator frame and quote on your TRMNL. Scan the QR code when you want to
+          reveal the episode.
+        </p>
+        <p class="actions">
+          <a class="button" href="https://rebigulator.org/">Play Rebigulator Online</a>
+        </p>
+      </section>
+
+      <section class="card">
+        <h2>Polling endpoint</h2>
+        <div class="routes">
+          <pre>GET /api/daily</pre>
+        </div>
+        <p>
+          The endpoint uses Rebigulator's daily challenge algorithm and public API to select the
+          same first frame shown at
+          <a href="https://rebigulator.org/daily/game">rebigulator.org</a>.
+        </p>
+      </section>
+
+      <section class="card stack">
+        <p>No API key or authentication is required.</p>
+        <p>
+          Created by <a href="https://madelinemiller.dev/">Me4502</a>. Source code available on
+          <a href="https://github.com/me4502/trmnl-rebigulator">GitHub</a>.
+        </p>
+      </section>
+    </main>
+  </body>
+</html>
