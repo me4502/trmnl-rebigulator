@@ -10,8 +10,6 @@
   .rebigulator {
     display: flex;
     flex-direction: column;
-    height: 100%;
-    font-family: sans-serif;
   }
 
   .rebigulator__header {
@@ -24,23 +22,15 @@
 
   .rebigulator .rebigulator__brand {
     font-family: "Akbar", sans-serif;
-    font-weight: 400;
     letter-spacing: 0;
   }
 
   .rebigulator__identity {
     display: flex;
     align-items: center;
-    gap: 7px;
-  }
-
-  .rebigulator__logo {
-    width: 32px;
-    height: 32px;
   }
 
   .rebigulator__date {
-    font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
   }
@@ -49,7 +39,6 @@
     display: flex;
     flex: 1 1 auto;
     min-height: 0;
-    gap: 8px;
   }
 
   .rebigulator__challenge {
@@ -57,12 +46,10 @@
     flex: 1 1 auto;
     min-width: 0;
     flex-direction: column;
-    gap: 6px;
   }
 
   .rebigulator__frame {
     display: block;
-    width: 100%;
     min-height: 0;
     flex: 1 1 auto;
     border: 4px solid var(--black);
@@ -71,7 +58,6 @@
   .rebigulator__quote {
     flex: 0 0 auto;
     border: 3px solid var(--black);
-    font-weight: 900;
     line-height: 1.1;
     text-transform: uppercase;
   }
@@ -85,61 +71,13 @@
     border: 3px solid var(--black);
   }
 
-  .rebigulator__reveal svg {
-    display: block;
-    width: 118px;
-    height: 118px;
-  }
-
   .rebigulator__reveal-label {
-    font-weight: 900;
     line-height: 1.05;
     text-transform: uppercase;
   }
 
-  .rebigulator--compact .rebigulator__header {
-    padding: 3px 7px;
-  }
-
-  .rebigulator--compact .rebigulator__brand {
-    font-size: 18px;
-  }
-
-  .rebigulator--compact .rebigulator__identity {
-    gap: 4px;
-  }
-
-  .rebigulator--compact .rebigulator__logo {
-    width: 22px;
-    height: 22px;
-  }
-
-  .rebigulator--compact .rebigulator__date {
-    font-size: 9px;
-  }
-
-  .rebigulator--compact .rebigulator__body {
-    gap: 5px;
-    padding-top: 5px;
-  }
-
-  .rebigulator--compact .rebigulator__quote {
-    padding: 3px 5px;
-    font-size: 11px;
-  }
-
   .rebigulator--compact .rebigulator__reveal {
     flex-basis: 86px;
-    padding: 4px;
-  }
-
-  .rebigulator--compact .rebigulator__reveal svg {
-    width: 70px;
-    height: 70px;
-  }
-
-  .rebigulator--compact .rebigulator__reveal-label {
-    font-size: 8px;
   }
 
   .rebigulator--portrait .rebigulator__body {
@@ -149,12 +87,6 @@
   .rebigulator--portrait .rebigulator__reveal {
     flex-basis: auto;
     flex-direction: row;
-    gap: 8px;
-  }
-
-  .rebigulator--portrait .rebigulator__reveal svg {
-    width: 72px;
-    height: 72px;
   }
 
   .rebigulator__error {
@@ -163,7 +95,6 @@
     align-items: center;
     justify-content: center;
     border: 4px solid var(--black);
-    font-weight: 900;
     text-transform: uppercase;
   }
 
@@ -171,37 +102,51 @@
 {% endtemplate %}
 
 {% template rebigulator_header %}
-<div class="px--2 py--1 bg--cyan-60 1bit:bg--white 2bit:bg--white rebigulator__header">
-  <div class="rebigulator__identity">
+<div
+  class="px--2 py--1 bg--cyan-60 1bit:bg--white 2bit:bg--white rebigulator__header"
+>
+  <div class="{% if compact %}gap--[4px]{% else %}gap--[7px]{% endif %} rebigulator__identity">
     <img
-      class="image image-dither image--contain rebigulator__logo"
+      class="image image-dither image--contain {% if compact %}w--[22px] h--[22px]{% else %}w--[32px] h--[32px]{% endif %} rebigulator__logo"
       src="https://rebigulator.org/logo.png"
       alt=""
     >
-    <span class="text--large text--black rebigulator__brand">
+    <span
+      class="{% if compact %}text--base{% else %}text--large{% endif %} text--black font--regular rebigulator__brand"
+    >
       {{- instance_title | default: 'Rebigulator' -}}
     </span>
   </div>
-  <span class="text--small text--black rebigulator__date">Daily challenge - {{ date }}</span>
+  <span class="text--small text--black font--bold rebigulator__date">Daily challenge - {{ date }}</span>
 </div>
 {% endtemplate %}
 
 {% template rebigulator_challenge %}
-<div class="rebigulator__challenge">
+<div class="gap--[6px] rebigulator__challenge">
   <img
-    class="image image-dither image--contain rebigulator__frame"
+    class="image image-dither image--contain w--full rebigulator__frame"
     src="{{ imageUrl }}"
     alt="Daily Rebigulator frame"
   >
   <div
-    class="px--2 py--1 bg--yellow-40 1bit:bg--white 2bit:bg--white text--base text--black text--center rebigulator__quote"
+    class="{% if compact %}px--1{% else %}px--2{% endif %} py--1 bg--yellow-40 1bit:bg--white 2bit:bg--white {% if compact %}text--small{% else %}text--base{% endif %} text--black text--center font--bold rebigulator__quote"
   >
     "{{ quote }}"
   </div>
 </div>
-<div class="p--2 text--center rebigulator__reveal">
-  {{ answer | qr_code: qr_size, 'm' }}
-  <span class="mt--1 text--small text--black rebigulator__reveal-label">
+<div
+  class="{% if compact %}p--1{% else %}p--2{% endif %} text--center {% if portrait %}gap--[8px]{% endif %} rebigulator__reveal"
+>
+  {% capture qr_svg %}{{ answer | qr_code: qr_size, 'm' }}{% endcapture %}
+  {% if portrait %}
+    {% assign qr_svg_start = '<svg class="w--[72px] h--[72px]"' %}
+  {% elsif compact %}
+    {% assign qr_svg_start = '<svg class="w--[70px] h--[70px]"' %}
+  {% else %}
+    {% assign qr_svg_start = '<svg class="w--[118px] h--[118px]"' %}
+  {% endif %}
+  {{ qr_svg | replace_first: '<svg', qr_svg_start }}
+  <span class="mt--1 text--small text--black font--bold rebigulator__reveal-label">
     Scan to reveal<br>
     the episode
   </span>
@@ -209,7 +154,7 @@
 {% endtemplate %}
 
 {% template rebigulator_error %}
-<div class="p--4 bg--yellow-40 text--large text--black text--center rebigulator__error">
+<div class="p--4 bg--yellow-40 text--large text--black text--center font--bold rebigulator__error">
   {{ error | default: "Unable to load today's Rebigulator challenge." }}
 </div>
 {% endtemplate %}

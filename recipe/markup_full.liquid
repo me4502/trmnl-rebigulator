@@ -1,11 +1,18 @@
 {% render 'rebigulator_styles' %}
-<div class="rebigulator">
-  {% render 'rebigulator_header', instance_title: instance_title, date: date %}
-  <div class="pt--2 rebigulator__body">
+<div class="h--full rebigulator">
+  {% render 'rebigulator_header', instance_title: instance_title, date: date, compact: false %}
+  <div class="pt--2 gap--[8px] rebigulator__body">
     {% if ok == false %}
       {% render 'rebigulator_error', error: error %}
     {% else %}
-      {% render 'rebigulator_challenge', imageUrl: imageUrl, quote: quote, answer: answer, qr_size: 5 %}
+      {% render 'rebigulator_challenge',
+        imageUrl: imageUrl,
+        quote: quote,
+        answer: answer,
+        qr_size: 5,
+        compact: false,
+        portrait: false
+      %}
     {% endif %}
   </div>
 </div>
