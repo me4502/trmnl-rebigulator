@@ -89,6 +89,17 @@
     flex-direction: row;
   }
 
+  @media (orientation: portrait) {
+    .rebigulator--responsive-portrait .rebigulator__body {
+      flex-direction: column;
+    }
+
+    .rebigulator--responsive-portrait .rebigulator__reveal {
+      flex-basis: auto;
+      flex-direction: row;
+    }
+  }
+
   .rebigulator__error {
     display: flex;
     flex: 1 1 auto;
@@ -135,7 +146,7 @@
   </div>
 </div>
 <div
-  class="{% if compact %}p--1{% else %}p--2{% endif %} text--center {% if portrait %}gap--[8px]{% endif %} rebigulator__reveal"
+  class="{% if compact %}p--1{% else %}p--2{% endif %} text--center {% if portrait %}gap--[8px]{% elsif responsive_portrait %}portrait:gap--[8px]{% endif %} rebigulator__reveal"
 >
   {% capture qr_svg %}{{ answer | qr_code: qr_size, 'm' }}{% endcapture %}
   {% if portrait %}
