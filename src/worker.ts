@@ -1,4 +1,4 @@
-import { buildDailyChallenge, getDateString, isValidDateString } from "./daily.js";
+import { buildDailyChallenge, getDateString, isValidDateString, ROUND_COUNT } from "./daily.js";
 import type { DailyChallengeError } from "./types.js";
 
 const DAILY_ROUTE = "/api/daily";
@@ -37,8 +37,9 @@ export default {
     }
 
     try {
-      const challenge = await buildDailyChallenge(date, env.REBIGULATOR_BASE_URL);
-      return jsonResponse(challenge, 200, cacheableApiHeaders());
+      const now = new Date();
+      const challenge = await buildDailyChallenge(date, env.REBIGULATOR_BASE_URL, now);
+      return jsonResponse(challenge, 200, cacheableApiHeaders(now));
     } catch (error) {
       const message = error instanceof Error ? error.message : "Unknown error";
       console.error(
@@ -76,13 +77,17 @@ function jsonResponse(
 
 function cacheableApiHeaders(now = new Date()): Record<string, string> {
   return {
-    "cache-control": `public, max-age=${secondsUntilNextUtcDay(now)}`,
+    "cache-control": `public, max-age=${secondsUntilNextImage(now)}`,
   };
 }
 
-export function secondsUntilNextUtcDay(now: Date): number {
-  const nextUtcDay = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1);
-  return Math.max(1, Math.ceil((nextUtcDay - now.getTime()) / 1000));
+export function secondsUntilNextImage(now: Date): number {
+  const elapsedMilliseconds =
+    ((now.getUTCHours() * 60 + now.getUTCMinutes()) * 60 + now.getUTCSeconds()) * 1000 +
+    now.getUTCMilliseconds();
+  const millisecondsPerImage = (24 * 60 * 60 * 1000) / ROUND_COUNT;
+  const elapsedInPhase = elapsedMilliseconds % millisecondsPerImage;
+  return Math.max(1, Math.ceil((millisecondsPerImage - elapsedInPhase) / 1000));
 }
 
 function nonCacheableApiHeaders(): Record<string, string> {

@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import worker, { secondsUntilNextUtcDay } from "./worker.js";
+import worker, { secondsUntilNextImage } from "./worker.js";
 
 const env: Env = {
   REBIGULATOR_BASE_URL: "https://rebigulator.org",
@@ -29,9 +29,9 @@ describe("daily API", () => {
     });
   });
 
-  it("caches successful responses until the next UTC day", () => {
-    expect(secondsUntilNextUtcDay(new Date("2026-07-24T12:00:00.000Z"))).toBe(43_200);
-    expect(secondsUntilNextUtcDay(new Date("2026-07-24T23:59:59.500Z"))).toBe(1);
+  it("caches successful responses until the next image sixth", () => {
+    expect(secondsUntilNextImage(new Date("2026-07-24T12:00:00.000Z"))).toBe(14_400);
+    expect(secondsUntilNextImage(new Date("2026-07-24T15:59:59.000Z"))).toBe(1);
   });
 
   it("returns renderable JSON for invalid dates", async () => {

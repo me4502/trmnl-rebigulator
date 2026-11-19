@@ -6,7 +6,7 @@ import type {
   ScreencapResponse,
 } from "./types.js";
 
-const ROUND_COUNT = 6;
+export const ROUND_COUNT = 6;
 const S17_LIMIT_CUTOFF = "2026-06-08";
 const MAX_UPSTREAM_BODY_BYTES = 2 * 1024 * 1024;
 const UPSTREAM_TIMEOUT_MS = 10_000;
@@ -49,40 +49,58 @@ export function getDailyEpisode(dateString: string): EpisodeListItem {
   return availableEpisodes[Math.abs(hash) % availableEpisodes.length];
 }
 
+// Should always be kept matching https://github.com/me4502/Rebigulator/blob/master/src/util/daily.ts#L56
 export function getDailyTimestampHashes(dateString: string): number[] {
   const timestampHashes: number[] = [];
 
-  for (let round = 0; round < ROUND_COUNT; round++) {
-    const seedString = `${dateString}-round${round * 12347}-salt${round * 98765 + 54321}`;
-    let hash = 5381;
+  for (let i = 0; i < ROUND_COUNT; i++) {
+    // Create very different seeds using large prime multipliers and different salts
+    const seedString = `${dateString}-round${i * 12347}-salt${i * 98765 + 54321}`;
+    let hash = 5381; // djb2 algorithm starting value
 
-    for (let index = 0; index < seedString.length; index++) {
-      const character = seedString.codePointAt(index) ?? 0;
-      hash = (hash << 5) + hash + character;
-      hash >>>= 0;
+    // Hash the seed string
+    for (let j = 0; j < seedString.length; j++) {
+      const char = seedString.codePointAt(j) || 0;
+      hash = (hash << 5) + hash + char; // hash * 33 + char
+      hash = hash >>> 0; // Convert to unsigned 32-bit
     }
 
+    // Apply additional mixing with different constants per iteration
     const mixingConstant = [0x85ebca6b, 0xc2b2ae35, 0xcc9e2d51, 0x1b873593, 0xe6546b64, 0x9e3779b9][
-      round
+      i % 6
     ];
     hash ^= hash >>> 16;
     hash *= mixingConstant;
     hash ^= hash >>> 13;
     hash *= 0xc2b2ae35;
     hash ^= hash >>> 16;
-    hash >>>= 0;
-    hash ^= (round * 2654435761) >>> 0;
-    hash >>>= 0;
+    hash = hash >>> 0;
 
-    timestampHashes.push(hash / 4294967295);
+    // Additional round-specific mixing
+    hash ^= (i * 2654435761) >>> 0; // Different prime per round
+    hash = hash >>> 0;
+
+    // Normalize to 0-1 range
+    const normalizedHash = hash / 4294967295; // Max unsigned 32-bit value
+    timestampHashes.push(normalizedHash);
   }
 
   return timestampHashes;
 }
 
+export function getDailyImageIndex(now = new Date(), imageCount = ROUND_COUNT): number {
+  const elapsedMilliseconds =
+    ((now.getUTCHours() * 60 + now.getUTCMinutes()) * 60 + now.getUTCSeconds()) * 1000 +
+    now.getUTCMilliseconds();
+  const millisecondsPerImage = (24 * 60 * 60 * 1000) / imageCount;
+
+  return Math.min(imageCount - 1, Math.floor(elapsedMilliseconds / millisecondsPerImage));
+}
+
 export async function buildDailyChallenge(
   dateString: string,
   baseUrl: string,
+  now = new Date(),
 ): Promise<DailyChallenge> {
   const dailyEpisode = getDailyEpisode(dateString);
   const episodeInfoUrl = new URL("/api/get-episode-info", baseUrl);
@@ -93,7 +111,9 @@ export async function buildDailyChallenge(
     throw new Error("The daily episode did not include any subtitles.");
   }
 
-  const timestampHash = getDailyTimestampHashes(dateString)[0];
+  const timestampHashes = getDailyTimestampHashes(dateString);
+  const imageIndex = getDailyImageIndex(now);
+  const timestampHash = timestampHashes[imageIndex];
   const subtitleIndex = Math.min(
     Math.floor(timestampHash * episodeInfo.Subtitles.length),
     episodeInfo.Subtitles.length - 1,

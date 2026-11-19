@@ -31,13 +31,7 @@
 html {
   background: var(--theme-background);
   color: var(--theme-text);
-  font-family:
-    Lato,
-    system-ui,
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    sans-serif;
+  font-family: Lato, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   line-height: 1.5;
 }
 
